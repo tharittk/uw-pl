@@ -82,29 +82,26 @@ fun oldest (dates: (int*int*int) list) =
 
 
 
-(* fun number_in_months_challenge (dates: (int*int*int) list, months: int list) = *)
+(* Challenge problem *)
+fun check_existance (num_list: int list, n: int) = 
+    if num_list = []
+    then false
+    else 
+        if (hd num_list) = n
+        then true
+        else check_existance (tl num_list, n)
+
 fun remove_duplicate_month (months: int list, current_months: int list) =
-    let
-        fun check_existance (nums: int list, n: int) = 
-            if nums = []
-            then false
-            else 
-                if (hd nums) = n
-                then true
-                else check_existance (tl nums, n)
-
-    in
-        if months = []
-        then []
+    if months = []
+    then []
+    else 
+        if check_existance(current_months, (hd months))
+        then
+            (* already exist, continue recursion *)
+            remove_duplicate_month (tl months, current_months)        
         else 
-            if check_existance(current_months, (hd months))
-            then      
-                remove_duplicate_month (tl months, current_months)        
-            else 
-                hd months::remove_duplicate_month (tl months, current_months @ [hd months])        
-    end
-
-
+            (* newly exist, append to the current month *)
+            hd months::remove_duplicate_month (tl months, current_months @ [hd months])        
 
 fun number_in_months_challenge (dates: (int*int*int) list, months: int list) =
     let 
@@ -119,4 +116,58 @@ fun dates_in_months_challenge (dates: (int*int*int) list, months: int list) =
         val month_unique = remove_duplicate_month (months, [0])
     in
         dates_in_months (dates, month_unique)
+    end
+
+fun reasonable_date (date: int*int*int) =
+    let
+        fun is_year_ok (yr: int) =
+            if yr <= 0
+            then false
+            else true
+        
+        fun is_month_ok (month: int) =
+            if (month < 1) orelse (month > 12)
+            then false
+            else true
+
+        fun max_day_in_month(month: int) =
+            let
+                val month31 = [1,3,5,7,8,10,12]
+                val month30 = [4,6,9,11]
+            in
+                if check_existance(month31, month)
+                then 31
+                else
+                    if check_existance (month30, month)
+                    then 30
+                    else 29
+            end
+
+        fun is_day_ok_month (day:int, month: int) =
+            if (day <= 0) orelse (day > max_day_in_month (month))
+            then false
+            else true
+            
+        fun is_leap_year (yr: int) =
+            if ( (yr mod 400) = 0 orelse (yr mod 4) = 0) andalso not (yr mod 100 = 0)
+            then true
+            else false
+    in
+        if (not (is_year_ok (#1 date)) ) orelse (not (is_month_ok (#2 date)))
+        then false
+        else
+            (* number of days valid with its specified month *)
+            if not (is_day_ok_month (#3 date, #2 date))
+            then false
+            else
+                if (#2 date) = 2
+                (* check leap year *)
+                then 
+                    if (#3 date = 29)
+                    (* only valid if a leap year *)
+                    then is_leap_year (#1 date)
+                    (* less than 29 *)
+                    else true
+                (* not February *)
+                else true
     end

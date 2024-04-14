@@ -92,3 +92,21 @@ val t15_emp_emp = dates_in_months_challenge([],[]) = []
 val t15_0 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[8,8,9,8,8,9]) = []
 val t15_1 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[3,3,3]) = [(2011,3,31)]
 val t15_3 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,4,3,2]) = [(2012,2,28),(2011,3,31),(2011,4,28)]
+
+
+(* reasonable_date *)
+
+val t16_1 = reasonable_date (2011,1, 30) = true
+val t16_2 = reasonable_date (2011,1, 31) = true
+val t16_3 = reasonable_date (2011,3, 32) = false
+val t16_4 = reasonable_date (2011,4, 31) = false
+val t16_5 = reasonable_date (~1,1, 30) = false
+val t16_6 = reasonable_date (0,1, 30) = false
+val t16_7 = reasonable_date (2011,0, 30) = false
+val t16_8 = reasonable_date (2011,13, 30) = false
+val t16_9 = reasonable_date (2011,1, 0) = false
+val t16_10 = reasonable_date (2011,1, ~1) = false
+val t16_11 = reasonable_date (2011,2, 28) = true
+val t16_12 = reasonable_date (2012,2, 29) = true
+val t16_13 = reasonable_date (2000,2, 29) = false
+
