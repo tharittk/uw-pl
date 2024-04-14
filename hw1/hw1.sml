@@ -43,7 +43,7 @@ fun date_to_string (date:int*int*int) =
     in
         month ^ " " ^ Int.toString(day) ^ ", " ^ Int.toString(year)
     end
-
+    
 fun number_before_reaching_sum (sum:int, nums: int list) =
     if sum <= (hd nums)
     then 0
@@ -79,3 +79,44 @@ fun oldest (dates: (int*int*int) list) =
         in 
             SOME (oldest_not_empty dates)
         end
+
+
+
+(* fun number_in_months_challenge (dates: (int*int*int) list, months: int list) = *)
+fun remove_duplicate_month (months: int list, current_months: int list) =
+    let
+        fun check_existance (nums: int list, n: int) = 
+            if nums = []
+            then false
+            else 
+                if (hd nums) = n
+                then true
+                else check_existance (tl nums, n)
+
+    in
+        if months = []
+        then []
+        else 
+            if check_existance(current_months, (hd months))
+            then      
+                remove_duplicate_month (tl months, current_months)        
+            else 
+                hd months::remove_duplicate_month (tl months, current_months @ [hd months])        
+    end
+
+
+
+fun number_in_months_challenge (dates: (int*int*int) list, months: int list) =
+    let 
+        val month_unique = remove_duplicate_month (months, [0])
+    in
+        number_in_months (dates, month_unique)
+    end
+
+
+fun dates_in_months_challenge (dates: (int*int*int) list, months: int list) =
+    let 
+        val month_unique = remove_duplicate_month (months, [0])
+    in
+        dates_in_months (dates, month_unique)
+    end

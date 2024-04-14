@@ -73,3 +73,22 @@ val t11 = oldest([(2012,2,28),(2011,3,31),(2011,4,28)]) = SOME (2011,3,31)
 val t11_emp = oldest([]) = NONE
 val t11_1 = oldest([(1999,4,28)]) = SOME (1999,4,28)
 val t11_2 = oldest([(2011,3,31),(1999,4,28)]) = SOME (1999,4,28)
+
+(* challenge *)
+
+val t12 = remove_duplicate_month ([1,2,1,4,5,5,5,8,12], [0]) = [1,2,4,5,8,12]
+
+(* number_in_months_challenge *)
+val t13_emp = number_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[]) = 0
+val t13_emp2 = number_in_months_challenge ([],[]) = 0
+val t13_emp3 = number_in_months_challenge ([],[1,1,2]) = 0
+val t13_0 = number_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[1,5,1,5,11,11]) = 0
+val t13_3 = number_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,3,4]) = 3
+
+(* dates_in_months_challenge *)
+val t15_empd = dates_in_months_challenge([], [1,2,1])  = []
+val t15_empm = dates_in_months_challenge([(2023,1,2), (2011, 4, 5)], [])  = []
+val t15_emp_emp = dates_in_months_challenge([],[]) = []
+val t15_0 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[8,8,9,8,8,9]) = []
+val t15_1 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[3,3,3]) = [(2011,3,31)]
+val t15_3 = dates_in_months_challenge ([(2012,2,28),(2013,12,1),(2011,3,31),(2011,4,28)],[2,3,4,3,2]) = [(2012,2,28),(2011,3,31),(2011,4,28)]
