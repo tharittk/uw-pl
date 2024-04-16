@@ -37,7 +37,32 @@ fun get_substitutions1 (substitutions, s) =
       | strList::substitutions' => case all_except_option (s, strList) of
                                  NONE => get_substitutions1 (substitutions', s)
                                  | SOME lst =>  lst @ get_substitutions1 (substitutions', s)
-                              
+
+(* 1.c *)
+fun get_substitutions2 (substitutions, s) =
+   let fun get_substitutions_acc (substitutions ,s,acc) =
+      case substitutions of
+      [] => acc
+      | strList::substitutions' => case all_except_option (s, strList) of
+                                 NONE => get_substitutions_acc (substitutions', s, acc)
+                                 | SOME lst => get_substitutions_acc (substitutions', s, acc@lst)
+   in
+      get_substitutions_acc (substitutions, s, [])
+   end
+
+(* 1.d *)
+fun similar_names (substitutions, fullName: {first:string, middle:string, last:string}) =
+   let val {first = f, middle = m, last=l} = fullName
+      fun substitute_all_names (nameList, m, l) =
+         case nameList of
+            [] => []
+            | name::nameList' =>{first=name, middle=m, last=l}:: substitute_all_names (nameList', m, l)
+   in
+      case get_substitutions2 (substitutions, f) of
+         [] => [fullName]
+         | lst => fullName::substitute_all_names (lst, m, l)
+   end
+
 
 
 (* you may assume that Num is always used with values 2, 3, ..., 10

@@ -13,22 +13,46 @@ val t1_1 = all_except_option ("string", ["string", "a"]) = SOME ["a"]
 val t1_2 = all_except_option ("string", ["string", "a", "b"]) = SOME ["a","b"]
 
 
-(* get_substitution *)
+(* get_substitution1 *)
 val t2_emp = get_substitutions1 ([["foo"],["there"]], "foo") = []
 val t2_emp2 = get_substitutions1 ([["foo2"],["there"], ["dumb"]], "foo") = []
 val t2_1 = get_substitutions1 ([["foo", "foo2"],["there"]], "foo") = ["foo2"]
 val t2_2 = get_substitutions1 ([["foo", "foo2"],["foo","foo3"]], "foo") = ["foo2", "foo3"]
 val t2_3 = get_substitutions1 ([["foo", "foo2"],["foo","foo3", "foo4"]], "foo") = ["foo2", "foo3", "foo4"]
+val t2_4 = get_substitutions1 ([["foo", "foo2"],["foo","foo3", "foo4", "foo2"]], "foo") = ["foo2", "foo3", "foo4", "foo2"]
+
+(* get_substitution2 *)
+val t3_emp = get_substitutions2 ([["foo"],["there"]], "foo") = []
+val t3_emp2 = get_substitutions2 ([["foo2"],["there"], ["dumb"]], "foo") = []
+val t3_1 = get_substitutions2 ([["foo", "foo2"],["there"]], "foo") = ["foo2"]
+val t3_2 = get_substitutions2 ([["foo", "foo2"],["foo","foo3"]], "foo") = ["foo2", "foo3"]
+val t3_3 = get_substitutions2 ([["foo", "foo2"],["foo","foo3", "foo4"]], "foo") = ["foo2", "foo3", "foo4"]
+val t3_4 = get_substitutions2 ([["foo", "foo2"],["foo","foo3", "foo4", "foo2"]], "foo") = ["foo2", "foo3", "foo4", "foo2"]
 
 
+val t4_0 = similar_names ([["Fredrick"],["Elizabeth","Betty"],["Freddie","F"]], 
+        {first="Fred", middle="W", last="Smith"}) 
+        =
+	    [{first="Fred", last="Smith", middle="W"}]
 
-(* val test2 = get_substitutions1 ([["foo"],["there"]], "foo") = []
+val t4_1= similar_names ([["Fred"],["Elizabeth","Betty"],["Fred"]], 
+        {first="Fred", middle="W", last="Smith"}) 
+        =
+	    [{first="Fred", last="Smith", middle="W"}]
 
-val test3 = get_substitutions2 ([["foo"],["there"]], "foo") = []
+val t4_2 = similar_names ([["Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], 
+        {first="Fred", middle="W", last="Smith"}) 
+        =
+	    [{first="Fred", last="Smith", middle="W"},
+	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
 
-val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
+val t4_3 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], 
+        {first="Fred", middle="W", last="Smith"}) 
+        =
 	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"},
 	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
+
+(* 
 
 val test5 = card_color (Clubs, Num 2) = Black
 
