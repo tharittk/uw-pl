@@ -8,6 +8,7 @@ fun same_string(s1 : string, s2 : string) =
 
 (* put your solutions for problem 1 here *)
 
+(* 1.a *)
 (* helper function for all_except_option *)
 fun is_str_in_strList (str, strList) =
    case strList of
@@ -15,7 +16,8 @@ fun is_str_in_strList (str, strList) =
       |  s::strList' => if same_string(str, s) 
                         then true
                         else false orelse is_str_in_strList (str, strList')
-
+                        
+(* output the list or empty list *)
 fun all_except_option_list (str, strList) = 
    case strList of
       [] => []
@@ -28,11 +30,14 @@ fun all_except_option (str, strList) =
    then SOME (all_except_option_list (str, strList))
    else NONE
 
-      (* case all_except_option_list (str, strList) of
-         [] => NONE *)
-         (* | _ => *)
-
-
+(* 1.b *)
+fun get_substitutions1 (substitutions, s) =
+   case substitutions of
+      [] => []
+      | strList::substitutions' => case all_except_option (s, strList) of
+                                 NONE => get_substitutions1 (substitutions', s)
+                                 | SOME lst =>  lst @ get_substitutions1 (substitutions', s)
+                              
 
 
 (* you may assume that Num is always used with values 2, 3, ..., 10
