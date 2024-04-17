@@ -4,7 +4,7 @@
 (* All the tests should evaluate to true. For example, the REPL should say: val test1 = true : bool *)
 
 use "hw2.sml";
-
+(* 
 (* all_except_option *)
 val t1_none = all_except_option ("strings", ["string"]) = NONE
 val t1_none2 = all_except_option ("string", []) = NONE
@@ -50,13 +50,43 @@ val t4_3 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie",
         {first="Fred", middle="W", last="Smith"}) 
         =
 	    [{first="Fred", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"},
-	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}]
+	     {first="Freddie", last="Smith", middle="W"}, {first="F", last="Smith", middle="W"}] *)
+
+(* card_color *)
+val t5_1 = card_color (Clubs, Num 2) = Black
+val t5_2 = card_color (Hearts, Jack) = Red
+val t5_3 = card_color (Diamonds, Num 10) = Red
+val t5_4 = card_color (Spades, Queen) = Black
+
+(* card_value *)
+val t6_1 = card_value (Clubs, Num 2) = 2
+val t6_2 = card_value (Hearts, Jack) = 10
+val t6_3 = card_value (Diamonds, Ace) = 11
+val t6_4 = card_value (Spades, Num 10) = 10
+
+(* remove_card *)
+
+val t7_0 = remove_card ([(Clubs, Num 2)], 
+                (Clubs, Num 2), IllegalMove) 
+                = 
+                []
+val t7_emp = remove_card ([], 
+                (Clubs, Num 2), IllegalMove) handle IllegalMove => [(Spades, Num 99)]
+
+val t7_noexist = remove_card ([(Hearts, Jack)], 
+                (Clubs, Num 2), IllegalMove)  handle IllegalMove => [(Spades, Num 99)]
+
+val t7_1 = remove_card ([(Clubs, Num 2), (Hearts, Jack), (Clubs, Num 2)], 
+                (Clubs, Num 2), IllegalMove) 
+                = 
+                [(Hearts, Jack), (Clubs, Num 2)]
+val t7_2 = remove_card ([(Clubs, Num 3), (Hearts, Jack), (Clubs, Num 2)], 
+                (Clubs, Num 2), IllegalMove) 
+                = 
+                [(Clubs, Num 3),(Hearts, Jack)]
 
 (* 
 
-val test5 = card_color (Clubs, Num 2) = Black
-
-val test6 = card_value (Clubs, Num 2) = 2
 
 val test7 = remove_card ([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = []
 

@@ -63,8 +63,6 @@ fun similar_names (substitutions, fullName: {first:string, middle:string, last:s
          | lst => fullName::substitute_all_names (lst, m, l)
    end
 
-
-
 (* you may assume that Num is always used with values 2, 3, ..., 10
    though it will not really come up *)
 datatype suit = Clubs | Diamonds | Hearts | Spades
@@ -77,4 +75,39 @@ datatype move = Discard of card | Draw
 exception IllegalMove
 
 (* put your solutions for problem 2 here *)
+
+(* 2.a *)
+fun card_color (card) = 
+   case card of
+      (Spades, _) => Black
+      | (Clubs, _) => Black
+      | (Diamonds, _) => Red
+      | (Hearts, _) => Red
+
+(* 2.b *)
+fun card_value (card) =
+   case card of 
+    (_, Num i) => i
+    | (_, Ace) => 11
+    | (_, _) => 10
+   
+(* 2.c *)
+fun remove_card (cardList, c, e) =
+   (* helper function *)
+   let
+      fun is_c_in_cardList (c, cardList) =
+      case cardList of
+         [] => false
+         |  card::cardList' => if card = c
+                           then true
+                           else false orelse is_c_in_cardList (c, cardList')
+   in
+      if is_c_in_cardList (c, cardList)
+      then
+         case cardList of
+            [] => []
+            | card::cardList' => if card = c then cardList' else card::remove_card(cardList', c, e)
+      else
+         raise e
+   end
 
