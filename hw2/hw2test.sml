@@ -109,10 +109,26 @@ val t10_eq_sm = score ([(Spades, Num 2),(Clubs, Num 4)],6) = 0
 
 
 
+val cardList = [(Clubs, Num 1), (Diamonds, Num 2), (Hearts, Num 3), (Spades, Num 4),
+                (Clubs, Jack), (Diamonds, Queen), (Hearts, King), (Spades, Ace)]
+
+val t11_all_emp = officiate ([], [], 6) = 3
+val t11_noMove = officiate (cardList, [], 2) = 1
+val t11_noCard = officiate ([], [Draw], 4) = 2
+val t11_draw1stop = officiate ([(Clubs,Num 8)], [Draw], 6) = 3
+val t11_draw1 =  officiate (cardList, [Draw], 2) = 0
+val t11_draw2 =  officiate (cardList, [Draw, Draw], 2) = 3
+
+val t11_drawExceed =  officiate (cardList, [Draw, Draw, Draw, Draw], 4) = 6
+val t11_drawAll_lt = officiate( cardList, [Draw, Draw, Draw, Draw,Draw, Draw, Draw, Draw], 52) = 1
+val t11_drawAll_gt = officiate( cardList, [Draw, Draw, Draw, Draw,Draw, Draw, Draw, Draw], 50) = 3
+
+(* Discard implementation *)
+(* val t11_drawDiscCont = officiate (cardList, [Draw, Draw, Discard(Clubs, 2), Draw, Draw], 9 ) = 1
+val t11_draw2disc =  officiate (cardList, [Draw, Draw, Discard(Clubs, 1)], 10) = 4
+val t11_draw2discErr =  officiate (cardList, [Draw, Draw, Discard(Clubs, 3)], 10) handle IllegalMove => [(Spades, Num 99)]  *)
 
 (* 
-
-val test10 = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4
 
 val test11 = officiate ([(Hearts, Num 2),(Clubs, Num 4)],[Draw], 15) = 6
 

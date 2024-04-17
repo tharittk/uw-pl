@@ -1,12 +1,10 @@
-(* Dan Grossman, Coursera PL, HW2 Provided Code *)
 
-(* if you use this function to compare two strings (returns true if the same
-   string), then you avoid several of the functions in problem 1 having
-   polymorphic types that may be confusing *)
+(* Hw 2 *)
+
 fun same_string(s1 : string, s2 : string) =
     s1 = s2
 
-(* put your solutions for problem 1 here *)
+(* Solutions for problem 1 here *)
 
 (* 1.a *)
 (* helper function for all_except_option *)
@@ -74,7 +72,7 @@ datatype move = Discard of card | Draw
 
 exception IllegalMove
 
-(* put your solutions for problem 2 here *)
+(* Solutions for problem 2 here *)
 
 (* 2.a *)
 fun card_color (card) = 
@@ -137,3 +135,37 @@ fun score (cardList, goal) =
       then pre_lim_score(sum, goal) div 2 
       else pre_lim_score (sum, goal)
    end
+
+(* 2.g *)
+fun officiate (cardList, moveList, goal) =
+   let 
+      val heldList = []
+      (* helper function *)
+      fun is_cardList_empty (cardList) = case cardList of [] => true | card::cardList =>false
+      fun is_score_exceeds_goal (heldList, goal) = if sum_cards(heldList) > goal then true else false 
+      (* main recursive helper *)
+      fun recursively_execute_move (moveList, cardList, heldList, goal) =
+         (* 1 of 3 criteria stop playing *)
+         if is_cardList_empty (cardList)
+         then score (heldList, goal)
+         else
+            (* 2 of 3 criteria stop playing *)
+            if is_score_exceeds_goal (heldList, goal)
+            then score (heldList, goal)
+            else
+               case moveList of
+                  (* 3 of 3 criteria stop playing *)
+                  [] => score(heldList, goal)
+                  | move::moveLeft => case move of
+                                       Draw => case cardList of 
+                                          [] => score (heldList, goal) 
+                                          (* remove top of the deck and append to the held list *)
+                                          | card::cardLeft => recursively_execute_move(moveLeft, cardLeft, card::heldList, goal)
+
+                                       (* retain original deck, remove from the held list *)
+                                       (* | Discard c => recursively_execute_move(moveLeft, cardList, remove_card (heldList, c, IllegalMove), goal) *)
+
+   in
+      recursively_execute_move (moveList, cardList, heldList, goal)
+   end
+
