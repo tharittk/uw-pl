@@ -111,3 +111,29 @@ fun remove_card (cardList, c, e) =
          raise e
    end
 
+(* 2.d *)
+fun all_same_color (cardList) = 
+   case cardList of
+   [] => true
+   | head::[] => true
+   | head::(neck::rest) => (card_color(head) = card_color (neck)) andalso all_same_color (neck::rest)
+
+(* 2.e *)
+fun sum_cards (cardList) =
+   let fun sum_cards_acc (cardList, acc) =
+         case cardList of
+            [] => acc
+            | card::cardList' => sum_cards_acc(cardList', acc + card_value (card))
+   in
+      sum_cards_acc (cardList, 0)
+   end
+
+(* 2.f *)
+fun score (cardList, goal) =
+   let val sum = sum_cards (cardList)
+      fun pre_lim_score (sum, goal) = if sum > goal then 3 * (sum - goal) else (goal - sum)
+   in
+      if all_same_color (cardList) 
+      then pre_lim_score(sum, goal) div 2 
+      else pre_lim_score (sum, goal)
+   end

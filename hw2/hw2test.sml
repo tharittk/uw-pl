@@ -85,14 +85,32 @@ val t7_2 = remove_card ([(Clubs, Num 3), (Hearts, Jack), (Clubs, Num 2)],
                 = 
                 [(Clubs, Num 3),(Hearts, Jack)]
 
+
+val t8_dup = all_same_color [(Hearts, Ace), (Hearts, Ace)] = true
+val t8_red = all_same_color [(Hearts, Ace), (Diamonds, Num 2)] = true
+val t8_redblack = all_same_color [(Hearts, Ace), (Diamonds, Num 2), (Spades, King)] = false
+val t8_black = all_same_color [(Clubs, Ace), (Spades, King)] = true
+val t8_emp = all_same_color [] = true
+
+
+val t9_emp = sum_cards [] = 0
+val t9_1 = sum_cards [(Clubs, Num 2)] = 2
+val t9_num = sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
+val t9_all = sum_cards [(Clubs, Jack),(Clubs, Queen), (Hearts, Ace), (Spades, King), (Clubs, Num 2)] = 43
+
+
+val t10_emp = score ([],6) = 3
+val t10_lt_df = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4
+val t10_gt_df = score ([(Hearts, Num 2),(Clubs, Num 4)],3) = 9
+val t10_eq_df = score ([(Hearts, Num 2),(Clubs, Num 4)],6) = 0
+val t10_lt_sm = score ([(Hearts, Num 2),(Hearts, Num 4)],10) = 2
+val t10_gt_sm = score ([(Hearts, Num 2),(Diamonds, Num 4)],3) = 4
+val t10_eq_sm = score ([(Spades, Num 2),(Clubs, Num 4)],6) = 0
+
+
+
+
 (* 
-
-
-val test7 = remove_card ([(Hearts, Ace)], (Hearts, Ace), IllegalMove) = []
-
-val test8 = all_same_color [(Hearts, Ace), (Hearts, Ace)] = true
-
-val test9 = sum_cards [(Clubs, Num 2),(Clubs, Num 2)] = 4
 
 val test10 = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4
 
