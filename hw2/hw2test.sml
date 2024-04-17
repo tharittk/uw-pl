@@ -124,9 +124,9 @@ val t11_drawAll_lt = officiate( cardList, [Draw, Draw, Draw, Draw,Draw, Draw, Dr
 val t11_drawAll_gt = officiate( cardList, [Draw, Draw, Draw, Draw,Draw, Draw, Draw, Draw], 50) = 3
 
 (* Discard implementation *)
-(* val t11_drawDiscCont = officiate (cardList, [Draw, Draw, Discard(Clubs, 2), Draw, Draw], 9 ) = 1
-val t11_draw2disc =  officiate (cardList, [Draw, Draw, Discard(Clubs, 1)], 10) = 4
-val t11_draw2discErr =  officiate (cardList, [Draw, Draw, Discard(Clubs, 3)], 10) handle IllegalMove => [(Spades, Num 99)]  *)
+val t11_drawDiscCont = officiate (cardList, [Draw, Draw, Discard(Diamonds, Num 2), Draw, Draw], 9 ) = 1
+val t11_draw2disc =  officiate (cardList, [Draw, Draw, Discard(Clubs, Num 1)], 10) = 4
+val t11_draw2discErr =  officiate (cardList, [Draw, Draw, Discard(Clubs, Num 3)], 10) handle IllegalMove => 99
 
 (* 
 

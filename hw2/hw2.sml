@@ -156,14 +156,14 @@ fun officiate (cardList, moveList, goal) =
                case moveList of
                   (* 3 of 3 criteria stop playing *)
                   [] => score(heldList, goal)
-                  | move::moveLeft => case move of
-                                       Draw => case cardList of 
+                  
+                  (* retain original deck, remove from the held list *)
+                  | Discard(c)::moveLeft => recursively_execute_move(moveLeft, cardList, remove_card (heldList, c, IllegalMove), goal)
+
+                  | Draw::moveLeft => case cardList of 
                                           [] => score (heldList, goal) 
                                           (* remove top of the deck and append to the held list *)
                                           | card::cardLeft => recursively_execute_move(moveLeft, cardLeft, card::heldList, goal)
-
-                                       (* retain original deck, remove from the held list *)
-                                       (* | Discard c => recursively_execute_move(moveLeft, cardList, remove_card (heldList, c, IllegalMove), goal) *)
 
    in
       recursively_execute_move (moveList, cardList, heldList, goal)
