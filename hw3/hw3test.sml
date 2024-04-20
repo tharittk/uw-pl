@@ -5,12 +5,13 @@
 
 use "hw3.sml";
 
+(* Q. 1 *)
 val t1_1 = only_capitals ["A","B","C"] = ["A","B","C"]
 val t1_2 = only_capitals ["A","bB","C"] = ["A","C"]
 val t1_3 = only_capitals [] = []
 val t1_4 = only_capitals ["aBc", "lkA"] = []
 
-
+(* Q. 2 *)
 val t2_1 = longest_string1 ["A","bc","C"] = "bc"
 val t2_2 = longest_string1 ["Aa","bc","C"] = "Aa"
 val t2_last = longest_string1 ["A","bc","Cde", "fghk"] = "fghk"
@@ -18,9 +19,31 @@ val t2_emp = longest_string1 [] = ""
 val t2_3 = longest_string1 ["bc"] = "bc"
 val t2_tie3 = longest_string1 ["A","bcde","Cde", "fghk"] = "bcde"
 
-(* val test2 = longest_string1 ["A","bc","C"] = "bc"
+(* Q.3 *)
+val t3_1 = longest_string2 ["A","bc","C"] = "bc"
+val t3_2 = longest_string2 ["Aa","bc","C"] = "bc"
+val t3_last = longest_string2 ["A","bc","Cde", "fghk"] = "fghk"
+val t3_emp = longest_string2 [] = ""
+val t3_3 = longest_string2 ["bc"] = "bc"
+val t3_tie3 = longest_string2 ["A","bcde","Cde", "fghk"] = "fghk"
 
-val test3 = longest_string2 ["A","bc","C"] = "bc"
+(* Q.4 *)
+val t4a_1 = longest_string3 ["A","bc","C"] = "bc"
+val t4a_2 = longest_string3 ["Aa","bc","C"] = "Aa"
+val t4a_last = longest_string3 ["A","bc","Cde", "fghk"] = "fghk"
+val t4a_emp = longest_string3 [] = ""
+val t4a_3 = longest_string3 ["bc"] = "bc"
+val t4a_tie3 = longest_string3 ["A","bcde","Cde", "fghk"] = "bcde"
+
+val t4b_1 = longest_string4 ["A","bc","C"] = "bc"
+val t4b_2 = longest_string4 ["Aa","bc","C"] = "bc"
+val t4b_last = longest_string4 ["A","bc","Cde", "fghk"] = "fghk"
+val t4b_emp = longest_string4 [] = ""
+val t4b_3 = longest_string4 ["bc"] = "bc"
+val t4b_tie3 = longest_string4 ["A","bcde","Cde", "fghk"] = "fghk"
+
+
+(* 
 
 val test4a = longest_string3 ["A","bc","C"] = "bc"
 

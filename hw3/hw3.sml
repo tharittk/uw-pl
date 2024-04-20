@@ -7,6 +7,18 @@ fun only_capitals strList = List.filter (fn x => Char.isUpper(String.sub(x, 0)) 
 (* Q. 2 *)
 fun longest_string1 strList = List.foldl (fn (x,y) => if String.size(y) >= String.size(x) then y else x ) "" strList
 
+(* Q. 2 *)
+fun longest_string2 strList = List.foldl (fn (x,y) => if String.size(x) >= String.size(y) then x else y ) "" strList
+
+(* Q. 3 *)
+(* helper(int * int -> bool) -> string list -> string *)
+fun longest_string_helper f strList = 
+				List.foldl (fn (x,y) => if f(String.size(x), String.size(y)) then x else y) "" strList
+
+val longest_string3 = longest_string_helper (fn (x,y) => x > y)
+val longest_string4 = longest_string_helper (fn (x,y) => x >= y)
+
+
 exception NoAnswer
 
 datatype pattern = Wildcard
