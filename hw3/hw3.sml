@@ -72,7 +72,7 @@ fun g f1 f2 p =
 (* Q. 9  *)
 val count_wildcards = g (fn _ =>1) (fn s => 0)
 
-
+(* Q.9a *)
 (**** for the challenge problem only ****)
 
 datatype typ = Anything
