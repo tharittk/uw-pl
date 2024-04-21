@@ -103,6 +103,7 @@ fun match(v, p) =
 										NONE => NONE
 										| SOME lst => aux (vs', ps', acc@lst))
 				| ([], []) => SOME acc
+				| _ => NONE
 	in
 		case (v, p) of
 			(_, Wildcard) => SOME []
@@ -117,6 +118,12 @@ fun match(v, p) =
 				if (s1 = s2) then match (vi, pi) else NONE
 			| (_, _) => NONE
 	end
+
+(* Q. 12 *)
+fun first_match v ps = 
+	SOME( first_answer (fn p => match(v, p)) ps )
+	handle NoAnswer => NONE
+
 
 (**** for the challenge problem only ****)
 

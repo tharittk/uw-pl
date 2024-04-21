@@ -103,6 +103,8 @@ val t10_wc = check_pat (Wildcard) = true
 val t11_0 = match (Const(1), UnitP) = NONE
 val t11_cnst1 = match (Const(1), ConstP(2)) = NONE
 val t11_cnst2 = match (Const(1), ConstP(1)) = SOME []
+val t11_var = match (Const(1), Variable("c")) = SOME [("c", Const(1))]
+
 val t11_cons = match (
     Constructor("h", Constructor("De", Const(2)) ), 
     ConstructorP("h", ConstructorP("De", Variable("k")) ) ) = SOME ([("k", Const(2))]) 
@@ -111,17 +113,16 @@ val t11_cons1var = match (
     Constructor("h", Constructor("De", Tuple[Const(9), Const(5), Const(2) ]) ), 
     ConstructorP("h", ConstructorP("De", TupleP [Variable("De2"),Wildcard, ConstP(2) ]) ) ) = SOME [("De2", Const(9))]
 
-
-
 val t11_cons2var = match (
     Constructor("h", Constructor("De", Tuple[Const(9), Const(5), Const(2) ]) ), 
     ConstructorP("h", ConstructorP("De", TupleP [Variable("De2"),Wildcard, Variable("tt") ]) ) ) 
     = SOME [("De2", Const(9)), ("tt", Const(2))]
 
 
-(* 
-
-val test11 = match (Const(1), UnitP) = NONE
-
-val test12 = first_match Unit [UnitP] = SOME [] *)
-
+val t12_1 = first_match Unit [UnitP] = SOME []
+val t12_2 = first_match (Const 9) [Variable("s")] = SOME [("s", Const(9))]
+val t12_3 = first_match (Const 9) [ConstP 4,Variable("s")] = SOME [("s", Const(9))]
+val t12_4 = first_match (Const 9) [ConstP 9, Variable("s")] = SOME []
+val t12_5 = first_match (Const 9) [ConstP 4, ConstP 5] = NONE 
+(* val t12_6 = first_match (Const 9) [ConstP 1,  ConstructorP("De", TupleP[ConstP(9), ConstP(5), ConstP(2) ])] 
+val t12_7 = first_match (Const 9) [ConstP 4, ConstructorP("De", TupleP[ConstP(5), Variable "k",ConstP(2) ])]  *)
