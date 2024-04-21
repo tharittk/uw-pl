@@ -69,9 +69,14 @@ val t8_1 = all_answers (fn x => if x > 1 then SOME [x] else NONE) [2] = SOME [2]
 val t8_3 = all_answers (fn x => if x > 1 then SOME [x] else NONE) [2,3,4] = SOME [2,3,4]
 val t8_n = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE
 
-(* 
+(* Q. 9 *)
+val t9a_1 = count_wildcards Wildcard = 1
+val t9a_0 = count_wildcards (Variable "a") = 0
+val t9a_2 = count_wildcards ( TupleP [Wildcard, Wildcard, Variable "b"]  )= 2
+val t9a_2type = count_wildcards ( ConstructorP("h", TupleP [Wildcard, Wildcard, Variable "b" ]) )= 2
+val t9a_nest = count_wildcards ( ConstructorP("h", ConstructorP("k", TupleP [Wildcard, Wildcard, Variable "b" ]) ) )=2
 
-val test8 = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE
+(* 
 
 val test9a = count_wildcards Wildcard = 1
 

@@ -1,4 +1,4 @@
-
+ 
 
 (* Q. 1 *)
 fun only_capitals strList = List.filter (fn x => Char.isUpper(String.sub(x, 0)) ) strList
@@ -44,6 +44,7 @@ fun all_answers f xs =
 		aux(f, xs, []) 
 	end
 
+(* Provided code of Q. 9 forward *)
 datatype pattern = Wildcard
 		 | Variable of string
 		 | UnitP
@@ -67,6 +68,10 @@ fun g f1 f2 p =
 	  | ConstructorP(_,p) => r p
 	  | _                 => 0
     end
+
+(* Q. 9  *)
+val count_wildcards = g (fn _ =>1) (fn s => 0)
+
 
 (**** for the challenge problem only ****)
 
