@@ -69,10 +69,55 @@ fun g f1 f2 p =
 	  | _                 => 0
     end
 
-(* Q. 9  *)
+(* Q. 9abc *)
 val count_wildcards = g (fn _ =>1) (fn s => 0)
+val count_wildcards_and_variable_length = g (fn _ =>1) (fn s => String.size(s))
+fun count_some_var (s,p) = g (fn _ => 0) (fn x => if x=s then 1 else 0) p
 
-(* Q.9a *)
+
+(* Q. 10 *)
+fun check_pat pat =
+	let
+		fun strings_used_in_variables_p (p) = 
+			case p of
+			Wildcard          => []
+			| Variable x        => [x]
+			| TupleP ps         => List.foldl (fn (p',i) => (strings_used_in_variables_p p') @ i ) [] ps
+			| ConstructorP(_,p') => strings_used_in_variables_p(p')
+			| _                 => []
+
+		fun string_list_is_all_distinct (xs) = 
+			case xs of
+			[] => true
+			| x::xs' =>  if List.exists (fn s => s=x) xs' then false else string_list_is_all_distinct (xs')
+	in
+	(string_list_is_all_distinct o strings_used_in_variables_p) pat
+	end 
+
+(* Q. 11 *)
+fun match(v, p) =
+	let
+		fun aux (vs, ps, acc) = 
+			case (vs, ps) of
+				(vi::vs', pi::ps') => (case match(vi, pi) of
+										NONE => NONE
+										| SOME lst => aux (vs', ps', acc@lst))
+				| ([], []) => SOME acc
+	in
+		case (v, p) of
+			(_, Wildcard) => SOME []
+			| (vv, Variable s) => SOME [(s, vv)]
+			| (Unit, UnitP) => SOME []
+			| (Const c1, ConstP c2) => if c1=c2 then SOME [] else NONE
+			| (Tuple vs, TupleP ps) =>
+				if List.length (vs) = List.length (ps)
+				then aux (vs, ps, [])
+				else NONE
+			| (Constructor(s2, vi), ConstructorP(s1, pi)) =>
+				if (s1 = s2) then match (vi, pi) else NONE
+			| (_, _) => NONE
+	end
+
 (**** for the challenge problem only ****)
 
 datatype typ = Anything

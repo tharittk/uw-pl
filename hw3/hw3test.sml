@@ -69,22 +69,57 @@ val t8_1 = all_answers (fn x => if x > 1 then SOME [x] else NONE) [2] = SOME [2]
 val t8_3 = all_answers (fn x => if x > 1 then SOME [x] else NONE) [2,3,4] = SOME [2,3,4]
 val t8_n = all_answers (fn x => if x = 1 then SOME [x] else NONE) [2,3,4,5,6,7] = NONE
 
-(* Q. 9 *)
+(* Q. 9 abc *)
 val t9a_1 = count_wildcards Wildcard = 1
-val t9a_0 = count_wildcards (Variable "a") = 0
-val t9a_2 = count_wildcards ( TupleP [Wildcard, Wildcard, Variable "b"]  )= 2
-val t9a_2type = count_wildcards ( ConstructorP("h", TupleP [Wildcard, Wildcard, Variable "b" ]) )= 2
-val t9a_nest = count_wildcards ( ConstructorP("h", ConstructorP("k", TupleP [Wildcard, Wildcard, Variable "b" ]) ) )=2
+val t9a_0 = count_wildcards (Variable ("a")) = 0
+val t9a_2 = count_wildcards ( TupleP [Wildcard, Wildcard, Variable("b")]  )= 2
+val t9a_2type = count_wildcards ( ConstructorP("h", TupleP [Wildcard, Wildcard, Variable("b") ]) )= 2
+val t9a_nest = count_wildcards ( ConstructorP("h", ConstructorP("k", TupleP [Wildcard, Wildcard, Variable("b") ]) ) )=2
+val t9a_unit = count_wildcards ( UnitP) = 0
+
+
+val t9b_1 = count_wildcards_and_variable_length Wildcard = 1
+val t9b_0 = count_wildcards_and_variable_length (Variable("aDef")) = 4
+val t9b_2 = count_wildcards_and_variable_length ( TupleP [Wildcard, Wildcard, Variable("b2d")]  )= 5
+val t9b_2type = count_wildcards_and_variable_length ( ConstructorP("h", TupleP [Wildcard, Wildcard, Variable("b") ]) )= 3
+val t9b_nest = count_wildcards_and_variable_length ( ConstructorP("h", ConstructorP("k", TupleP [Wildcard, Wildcard, Variable("De") ]) ) )=4
+val t9b_unit = count_wildcards_and_variable_length (UnitP ) = 0
+
+
+val t9c_1 = count_some_var ("x", Variable("x") ) = 1
+val t9c_nest = count_some_var ("De", ConstructorP("h", ConstructorP("De", TupleP [Wildcard, Wildcard, Variable("De") ]) ) ) = 1
+val t9c_2type = count_some_var ("h", ConstructorP("h", TupleP [Wildcard, Wildcard, Variable("b") ]) )= 0
+val t9c_0 = count_some_var ("h", Wildcard ) = 0
+val t9c_2 = count_some_var ("De", ConstructorP("h", ConstructorP("De", TupleP [Variable("De"),Wildcard, Wildcard, Variable("De") ]) ) ) = 2
+val t9c_unit = count_some_var ("h", UnitP ) = 0
+
+val t10_1 = check_pat (Variable("x")) = true
+val t10_n2f = check_pat (ConstructorP("h", ConstructorP("De", TupleP [Variable("De"),Wildcard, Wildcard, Variable("De") ]) ) ) = false
+val t10_n2t = check_pat (ConstructorP("h", ConstructorP("De", TupleP [Variable("De"),Wildcard, Wildcard, Variable("Dex") ]) ) ) = true
+val t10_unit = check_pat (UnitP ) = true
+val t10_2type = check_pat (ConstructorP("h", TupleP [Wildcard, Wildcard, Variable("b") ]) )= true
+val t10_wc = check_pat (Wildcard) = true
+
+val t11_0 = match (Const(1), UnitP) = NONE
+val t11_cnst1 = match (Const(1), ConstP(2)) = NONE
+val t11_cnst2 = match (Const(1), ConstP(1)) = SOME []
+val t11_cons = match (
+    Constructor("h", Constructor("De", Const(2)) ), 
+    ConstructorP("h", ConstructorP("De", Variable("k")) ) ) = SOME ([("k", Const(2))]) 
+
+val t11_cons1var = match (
+    Constructor("h", Constructor("De", Tuple[Const(9), Const(5), Const(2) ]) ), 
+    ConstructorP("h", ConstructorP("De", TupleP [Variable("De2"),Wildcard, ConstP(2) ]) ) ) = SOME [("De2", Const(9))]
+
+
+
+val t11_cons2var = match (
+    Constructor("h", Constructor("De", Tuple[Const(9), Const(5), Const(2) ]) ), 
+    ConstructorP("h", ConstructorP("De", TupleP [Variable("De2"),Wildcard, Variable("tt") ]) ) ) 
+    = SOME [("De2", Const(9)), ("tt", Const(2))]
+
 
 (* 
-
-val test9a = count_wildcards Wildcard = 1
-
-val test9b = count_wild_and_variable_lengths (Variable("a")) = 1
-
-val test9c = count_some_var ("x", Variable("x")) = 1
-
-val test10 = check_pat (Variable("x")) = true
 
 val test11 = match (Const(1), UnitP) = NONE
 
