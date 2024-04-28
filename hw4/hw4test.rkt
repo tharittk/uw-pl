@@ -41,23 +41,31 @@
    (check-equal? (list-nth-mod (list 0 1 2 3 4) 0) 0 "list-nth-mod zero")
    (check-equal? (list-nth-mod (list 0 1) 3) 1 "list-nth-mod one")
    (check-equal? (list-nth-mod (list 0 1) 2) 0 "list-nth-mod no-remain")
-   ;(check-equal? (list-nth-mod (list ) 2) 2) "list-nth-mod no-remain")
+   ;(check-equal? (list-nth-mod (list ) 2) 2 "list-nth-mod no-remain")
    ;(check-equal? (list-nth-mod (list 0 1) -1) -1 "list-nth-mod no-remain")
 
 
-   #|
    ; stream-for-n-steps test
    (check-equal? (stream-for-n-steps ones 2) (list 1 1) "stream-for-n-steps test")
-   
+   (check-equal? (stream-for-n-steps ones 0) (list ) "stream-for-n-steps test")
+   (check-equal? (stream-for-n-steps ones 1) (list 1) "stream-for-n-steps test")
+
+ 
    ; funny-number-stream test
    (check-equal? (stream-for-n-steps funny-number-stream 16) (list 1 2 3 4 -5 6 7 8 9 -10 11 12 13 14 -15 16) "funny-number-stream test")
-   
+
    ; dan-then-dog test
+   (check-equal? (stream-for-n-steps dan-then-dog 0) (list ) "dan-then-dog test emp")
    (check-equal? (stream-for-n-steps dan-then-dog 1) (list "dan.jpg") "dan-then-dog test")
+   (check-equal? (stream-for-n-steps dan-then-dog 2) (list "dan.jpg" "dog.jpg") "dan-then-dog test 2")
+   (check-equal? (stream-for-n-steps dan-then-dog 5) (list "dan.jpg" "dog.jpg" "dan.jpg" "dog.jpg" "dan.jpg") "dan-then-dog test 5")
    
    ; stream-add-zero test
    (check-equal? (stream-for-n-steps (stream-add-zero ones) 1) (list (cons 0 1)) "stream-add-zero test")
-   
+   (check-equal? (stream-for-n-steps (stream-add-zero dan-then-dog) 3) (list (cons 0 "dan.jpg") (cons 0 "dog.jpg") (cons 0 "dan.jpg")) "stream-add-zero test")
+   (check-equal? (stream-for-n-steps (stream-add-zero ones) 0) (list ) "stream-add-zero test emp")
+
+   #|
    ; cycle-lists test
    (check-equal? (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3) (list (cons 1 "a") (cons 2 "b") (cons 3 "a")) 
                  "cycle-lists test")

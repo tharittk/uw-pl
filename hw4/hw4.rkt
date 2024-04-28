@@ -17,6 +17,41 @@
 
 ; Q.3
 (define (list-nth-mod xs n)
-  (cond [(< n 0) (error "list-nth-mod: negative number")]
-        [(null? xs) (error "list-nth-mod: empty list")]
+  (cond [(negative? n) (error "list-nth-mod: negative number")]
+        [(empty? xs) (error "list-nth-mod: empty list")]
         [#t (car (list-tail xs (remainder n (length xs))))]))
+
+; Q.4
+(define (stream-for-n-steps s n)
+  (letrec ([f (lambda (stream ans)
+              (let ([pr (stream)])
+                (if (> ans n)
+                    null
+                    (cons (car pr) (f (cdr pr) (+ ans 1))))))])
+   (f s 1)))
+
+; Q.5
+(define funny-number-stream
+  (letrec ([f (lambda (x)
+                ( if (= (remainder x 5) 0)
+                     (cons (* -1 x) (lambda () (f (+ x 1))))
+                     (cons x (lambda () (f (+ x 1))))))])
+    (lambda () (f 1))))
+
+; Q.6
+(define dan-then-dog
+  (letrec ([f (lambda (isDanTurn)
+                (if isDanTurn
+                (cons "dan.jpg" (lambda () (f #f)))
+                (cons "dog.jpg" (lambda () (f #t)))))])
+    (lambda () (f #t))))
+
+; Q.7
+(define (stream-add-zero s)
+  (letrec ([pr (s)]
+        [v (car pr)])
+    (lambda () (cons (cons 0 v) (stream-add-zero (cdr pr))))))
+                  
+                  
+                      
+ 
