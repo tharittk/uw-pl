@@ -65,24 +65,39 @@
    (check-equal? (stream-for-n-steps (stream-add-zero dan-then-dog) 3) (list (cons 0 "dan.jpg") (cons 0 "dog.jpg") (cons 0 "dan.jpg")) "stream-add-zero test")
    (check-equal? (stream-for-n-steps (stream-add-zero ones) 0) (list ) "stream-add-zero test emp")
 
-   #|
+   
    ; cycle-lists test
    (check-equal? (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 3) (list (cons 1 "a") (cons 2 "b") (cons 3 "a")) 
+                 "cycle-lists test")
+   (check-equal? (stream-for-n-steps (cycle-lists (list 1 2 3) (list "a" "b")) 6) (list (cons 1 "a") (cons 2 "b") (cons 3 "a") (cons 1 "b") (cons 2 "a") (cons 3 "b")) 
+                 "cycle-lists test")
+
+   (check-equal? (stream-for-n-steps (cycle-lists (list 1 2 ) (list "a" "b" "c")) 6) (list (cons 1 "a") (cons 2 "b") (cons 1 "c") (cons 2 "a") (cons 1 "b") (cons 2 "c")) 
+                 "cycle-lists test")
+   (check-equal? (stream-for-n-steps (cycle-lists (list 1 2 ) (list "a" "b")) 5) (list (cons 1 "a") (cons 2 "b") (cons 1 "a") (cons 2 "b") (cons 1 "a")) 
+                 "cycle-lists test")
+   (check-equal? (stream-for-n-steps (cycle-lists (list 1) (list "a")) 2) (list (cons 1 "a") (cons 1 "a")) 
                  "cycle-lists test")
    
    ; vector-assoc test
    (check-equal? (vector-assoc 4 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1))) (cons 4 1) "vector-assoc test")
-   
+   (check-equal? (vector-assoc 4 (vector (cons 2 1) 1 (cons 4 1) (cons 4 2))) (cons 4 1) "vector-assoc test")
+   (check-equal? (vector-assoc 4 (vector )) #f "vector-assoc test")
+   (check-equal? (vector-assoc 5 (vector (cons 2 1) 1 (cons 4 1) (cons 4 2))) #f "vector-assoc test")
+   (check-equal? (vector-assoc 5 (vector (cons 2 1) 5 (cons 4 1) (cons 4 2))) #f "vector-assoc test")
+
+  
    ; cached-assoc tests
    (check-equal? ((cached-assoc (list (cons 1 2) (cons 3 4)) 3) 3) (cons 3 4) "cached-assoc test")
-   
+
+
+   #|
    ; while-less test
    (check-equal? (while-less 7 do (begin (set! a (+ a 1)) a)) #t "while-less test")
 
 |#
 
    ))
-
 (require rackunit/text-ui)
 ;; runs the test
 (run-tests tests)
