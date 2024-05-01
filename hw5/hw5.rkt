@@ -74,8 +74,8 @@
            (if (and (int? v1)
                     (int? v2))
                (if (> (int-num v1) (int-num v2))
-                   (ifgreater-e3 e)
-                   (ifgreater-e4 e))
+                   (eval-under-env (ifgreater-e3 e) env)
+                   (eval-under-env (ifgreater-e4 e) env))
                (error "MUPL ifgreater compare non-number")))]
         ;mlet
         [(mlet? e)
@@ -88,10 +88,11 @@
          (let ([cl (eval-under-env(call-funexp e) env)]
                [arg (eval-under-env(call-actual e) env)])
            (if (closure? cl)
-               (let ( [f (closure-fun cl)])
-               (if (not (fun-nameopt f)) ; fn not #f
-                   (eval-under-env (fun-body f) (cons (cons (fun-nameopt f) cl) (cons (cons (fun-formal f) arg) (closure-env cl))))
-                   (eval-under-env (fun-body f) (cons (cons (fun-formal f) arg) (closure-env cl)))))
+               (let* ( [f (closure-fun cl)]
+                       [new-env  (cons (cons (fun-formal f) arg) (closure-env cl))])
+               (if (fun-nameopt f) ; fn #f
+                   (eval-under-env (fun-body f) (cons (cons (fun-nameopt f) cl) new-env))
+                   (eval-under-env (fun-body f) new-env)))
                (error "call first expression not evaluated to closure")))]
 
         ;apair
@@ -123,8 +124,7 @@
         
 ;; Problem 3
 
-(define (ifaunit e1 e2 e3)
-  (if (aunit? e1) e2 e3))
+(define (ifaunit e1 e2 e3) (ifgreater (isaunit e1) (int 0) e2 e3))
 
 (define (mlet* lstlst e2)
   (if (null? lstlst)
@@ -140,18 +140,13 @@
                                         
 ;; Problem 4
 
-(define mupl-map2
+(define mupl-map
   (fun #f "fn"
        (fun "map" "mlist"
             (ifaunit (var "mlist")
-                     (aunit)
+                     (var "mlist")
                      (apair (call (var "fn") (fst (var "mlist"))) (call (var "map") (snd (var "mlist"))))))))
 
-(define mupl-map
-  (fun #f "fx"
-       (fun "map" "lst"
-            (ifaunit (var "lst") (var "lst")
-                     (apair (call (var "fx") (fst (var "lst"))) (call (var "map") (snd (var "lst"))))))))
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
