@@ -22,12 +22,16 @@
 
 ;; Problem 1
 
+;1.a
 (define (racketlist->mupllist rl)
   (cond [(null? rl) (aunit)]
         [#t (apair (car rl) (racketlist->mupllist (cdr rl)))]))
+;1.b
+(define (mupllist->racketlist ml)
+  (cond [(aunit? ml) null]
+        [#t (cons (apair-e1 ml) (mupllist->racketlist (apair-e2 ml)))])) 
 
 ;; Problem 2
-
 ;; lookup a variable in an environment
 ;; Do NOT change this function
 (define (envlookup env str)
@@ -42,6 +46,7 @@
 (define (eval-under-env e env)
   (cond [(var? e) 
          (envlookup env (var-string e))]
+        ; addition
         [(add? e) 
          (let ([v1 (eval-under-env (add-e1 e) env)]
                [v2 (eval-under-env (add-e2 e) env)])
@@ -51,6 +56,51 @@
                        (int-num v2)))
                (error "MUPL addition applied to non-number")))]
         ;; CHANGE add more cases here
+        ;all values evaluate to themselves
+        [(int? e) e]
+        [(closure? e) e]
+        [(aunit? e) e]
+        ;function
+        [(fun? e) #t]
+        ;ifgreater
+        [(ifgreater? e)
+         (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
+               [v2 (eval-under-env (ifgreater-e2 e) env)])
+           (if (and (int? v1)
+                    (int? v2))
+               (if (> (int-num v1) (int-num v2))
+                   (ifgreater-e3 e)
+                   (ifgreater-e4 e))
+               (error "MUPL ifgreater compare non-number")))]
+        ;mlet
+        [(mlet? e)
+         (let ([v (eval-under-env (mlet-e e) env)])
+           (if (string? (mlet-var e))
+               (eval-under-env (mlet-body e) (cons (cons (mlet-var e) v) env))
+               (error "MUPL var in mlet argumnet is not string")))]
+        ;call
+        [(call? e) #t]
+        ;apair
+        [(apair? e) (apair (eval-under-env (apair-e1 e) env) (eval-under-env (apair-e2 e) env))]
+        ;fst
+        [(fst? e)
+         (let ([pr (eval-under-env (fst-e e) env)])
+           (if (apair? pr)
+               (apair-e1 pr)
+               (error "fst expression not evaluated to apair type")))]
+        ;snd
+        [(snd? e)
+         (let ([pr (eval-under-env (snd-e e) env)])
+           (if (apair? pr)
+               (apair-e2 pr)
+               (error "snd expression not evaluated to apair type")))]
+        ;isaunit
+        [(isaunit? e)
+         (let ([unit (eval-under-env (isaunit-e e) env)])
+           (if (aunit? unit)
+               (int 1)
+               (int 0)))]
+        
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
