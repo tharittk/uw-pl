@@ -61,7 +61,12 @@
         [(closure? e) e]
         [(aunit? e) e]
         ;function
-        [(fun? e) #t]
+        [(fun? e)
+         (let ([s1 (fun-nameopt e)]
+               [s2 (fun-formal e)])
+           (if (and (or (string? s1) (not s1)) (string? s2))
+               (closure env e)
+               (error "function name and/or arguement is not string or #f")))]
         ;ifgreater
         [(ifgreater? e)
          (let ([v1 (eval-under-env (ifgreater-e1 e) env)]
@@ -79,7 +84,16 @@
                (eval-under-env (mlet-body e) (cons (cons (mlet-var e) v) env))
                (error "MUPL var in mlet argumnet is not string")))]
         ;call
-        [(call? e) #t]
+        [(call? e)
+         (let ([cl (eval-under-env(call-funexp e) env)]
+               [arg (eval-under-env(call-actual e) env)])
+           (if (closure? cl)
+               (let ( [f (closure-fun cl)])
+               (if (not (fun-nameopt f)) ; fn not #f
+                   (eval-under-env (fun-body f) (cons (cons (fun-nameopt f) f) (cons (cons (fun-formal f) arg) (closure-env cl))))
+                   (eval-under-env (fun-body f) (cons (cons (fun-formal f) arg) (closure-env cl)))))
+               (error "call first expression not evaluated to closure")))]
+
         ;apair
         [(apair? e) (apair (eval-under-env (apair-e1 e) env) (eval-under-env (apair-e2 e) env))]
         ;fst
