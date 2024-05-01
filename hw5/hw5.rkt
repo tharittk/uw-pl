@@ -90,7 +90,7 @@
            (if (closure? cl)
                (let ( [f (closure-fun cl)])
                (if (not (fun-nameopt f)) ; fn not #f
-                   (eval-under-env (fun-body f) (cons (cons (fun-nameopt f) f) (cons (cons (fun-formal f) arg) (closure-env cl))))
+                   (eval-under-env (fun-body f) (cons (cons (fun-nameopt f) cl) (cons (cons (fun-formal f) arg) (closure-env cl))))
                    (eval-under-env (fun-body f) (cons (cons (fun-formal f) arg) (closure-env cl)))))
                (error "call first expression not evaluated to closure")))]
 
@@ -123,15 +123,35 @@
         
 ;; Problem 3
 
-(define (ifaunit e1 e2 e3) "CHANGE")
+(define (ifaunit e1 e2 e3)
+  (if (aunit? e1) e2 e3))
 
-(define (mlet* lstlst e2) "CHANGE")
+(define (mlet* lstlst e2)
+  (if (null? lstlst)
+      e2
+      (mlet (car (car lstlst)) (cdr (car lstlst)) (mlet* (cdr lstlst) e2))))
+                      
 
-(define (ifeq e1 e2 e3 e4) "CHANGE")
-
+(define (ifeq e1 e2 e3 e4) (mlet "_x" e1
+                                 (mlet "_y" e2
+                                       (if (equal? (var "_x") (var "_y"))
+                                           e3
+                                           e4))))
+                                        
 ;; Problem 4
 
-(define mupl-map "CHANGE")
+(define mupl-map2
+  (fun #f "fn"
+       (fun "map" "mlist"
+            (ifaunit (var "mlist")
+                     (aunit)
+                     (apair (call (var "fn") (fst (var "mlist"))) (call (var "map") (snd (var "mlist"))))))))
+
+(define mupl-map
+  (fun #f "fx"
+       (fun "map" "lst"
+            (ifaunit (var "lst") (var "lst")
+                     (apair (call (var "fx") (fst (var "lst"))) (call (var "map") (snd (var "lst"))))))))
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
