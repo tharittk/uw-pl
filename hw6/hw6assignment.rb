@@ -10,8 +10,7 @@ class MyPiece < Piece
                [[[0, 0],[-1, 0],[-2, 0], [1, 0], [2, 0]], # long 5 (only needs two)
                [[0, 0], [0, -1], [0, -2], [0, 1], [0, 2]]],
                rotations([[0, 0], [1, 0], [0, 1]])] # chevron
-
-               # your enhancements here
+  # your enhancements here
   def initialize (point_array, board)
     super(point_array, board)
   end
@@ -19,7 +18,10 @@ class MyPiece < Piece
   def self.next_piece (board)
     MyPiece.new(All_MyPieces.sample, board)
   end
-  
+
+  def self.next_cheat_piece (board)
+    MyPiece.new([[[0,1]]], board)
+  end
 
 end
 
@@ -31,16 +33,26 @@ class MyBoard < Board
     @score = 0
     @game = game
     @delay = 500
+    @is_cheating = false
+  end
+
+  def is_cheating
+    @is_cheating
   end
 
   # gets the next piece
   def next_piece
-    @current_block = MyPiece.next_piece(self)
+    if is_cheating
+      @current_block = MyPiece.next_cheat_piece(self)
+    else
+      @current_block = MyPiece.next_piece(self)
+    end
     @current_pos = nil
+    @is_cheating = false
   end
 
   def store_current
-    locations = @current_block.current_rotationx
+    locations = @current_block.current_rotation
     displacement = @current_block.position
     (0..(locations.size - 1)).each{|index| 
       current = locations[index];
@@ -50,6 +62,14 @@ class MyBoard < Board
     remove_filled
     @delay = [@delay - 2, 80].max
   end
+
+  def activate_cheat
+    if @score >= 100 and not is_cheating
+      @is_cheating = true
+      @score -= 100
+    end
+  end
+
 end
 
 class MyTetris < Tetris
@@ -64,7 +84,9 @@ class MyTetris < Tetris
       @board.rotate_clockwise
       @board.rotate_clockwise
     })
-
+    @root.bind('c',  proc {
+      @board.activate_cheat
+    })
   end
 
   def set_board
@@ -73,9 +95,7 @@ class MyTetris < Tetris
     @canvas.place(@board.block_size * @board.num_rows + 3,
                   @board.block_size * @board.num_columns + 6, 24, 80)
     @board.draw
-  end
-
-  
+  end  
 end
 
 
