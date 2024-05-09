@@ -113,7 +113,7 @@ fun intersect (v1,v2) =
 	    NoPoints => NoPoints 
 	  | Point(x0,y0) => (* see if the point is within the segment bounds *)
 	    (* assumes v1 was properly preprocessed *)
-	    let two_points_to_line
+	    let 
 		fun inbetween(v,end1,end2) =
 		    (end1 - epsilon <= v andalso v <= end2 + epsilon)
 		    orelse (end2 - epsilon <= v andalso v <= end1 + epsilon)
@@ -198,3 +198,21 @@ fun eval_prog (e,env) =
 (* CHANGE: Add a case for Shift expressions *)
 
 (* CHANGE: Add function preprocess_prog of type geom_exp -> geom_exp *)
+fun preprocess_prog (e) =
+	case e of
+	LineSegment seg=> 
+	let
+		val (x1,y1,x2,y2) = seg
+	in
+		if (real_close (x1,x2) andalso real_close (y1,y2)) (* collaps *)
+		then Point (x1,y1)
+		else
+			if (x2 < x1)
+			then LineSegment (x2,y2,x1,y1) (* swap *)
+			else
+				if real_close (x1,x2) (* if yes, y-criteria *)
+				then if (y2 < y1) then LineSegment (x2,y2,x1,y1) else LineSegment (x1,y1,x2,y2)
+				else LineSegment (x1,y1,x2,y2) (* copy *)
+	end
+	| _ => e
+
