@@ -118,7 +118,29 @@ class Point < GeometryValue
     @x = x
     @y = y
   end
+  def eval_prog env 
+    self
+  end
+  def preprocess_prog
+    self
+  end
+  def shift(dx,dy)
+    Point.new((@x + dx), (@y+dy))
+  end
 end
+  # SAVE for part 4
+  # def intersect other
+  #   other.intersectPoint self
+  # end
+  # def intersectPoint p
+  # end
+  # def intersectLine line
+  # end
+  # def intersectVerticalLine vline
+  # end
+  # def intersectWithSegmentAsLineResult seg
+  # end
+
 
 class Line < GeometryValue
   # *add* methods to this class -- do *not* change given code and do not
@@ -128,6 +150,15 @@ class Line < GeometryValue
     @m = m
     @b = b
   end
+  def eval_prog env 
+    self
+  end
+  def preprocess_prog
+    self
+  end
+  def shift(dx,dy)
+    Line.new(@m, ((@b + dy) - (@m * dx)))
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -136,6 +167,15 @@ class VerticalLine < GeometryValue
   attr_reader :x
   def initialize x
     @x = x
+  end
+  def eval_prog env 
+    self
+  end
+  def preprocess_prog
+    self
+  end
+  def shift(dx,dy)
+    VerticalLine.new (@x + dx)
   end
 end
 
@@ -151,6 +191,31 @@ class LineSegment < GeometryValue
     @y1 = y1
     @x2 = x2
     @y2 = y2
+  end
+  def eval_prog env 
+    self
+  end
+  def preprocess_prog
+    if real_close_point(@x1, @y1, @x2, @y2)
+      Point.new(@x1, @y1) # collapse
+    else
+      if @x2 < @x1
+        LineSegment.new(@x2, @y2, @x1, @y1) # swap
+      else
+        if real_close(@x1, @x2)
+          if @y2 < @y1
+            LineSegment.new(@x2, @y2, @x1, @y1)
+          else
+            LineSegment.new(@x1, @y1, @x2, @y2)
+          end
+        else
+          LineSegment.new(@x1, @y1, @x2, @y2)
+        end
+      end
+    end
+  end
+  def shift(dx,dy)
+    LineSegment.new((@x1+dx), (@y1+dy), (@x2+dx), (@y2+dy))
   end
 end
 
@@ -174,6 +239,13 @@ class Let < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+  def eval_prog env 
+    @e2.preprocess_prog.eval_prog([[@s, @e1.preprocess_prog.eval_prog(env)]]+env)
+  end
+  def preprocess_prog
+    self
+  end
+
 end
 
 class Var < GeometryExpression
@@ -186,6 +258,9 @@ class Var < GeometryExpression
     pr = env.assoc @s
     raise "undefined variable" if pr.nil?
     pr[1]
+  end 
+  def preprocess_prog
+    self
   end
 end
 
@@ -196,5 +271,11 @@ class Shift < GeometryExpression
     @dx = dx
     @dy = dy
     @e = e
+  end
+  def eval_prog env 
+    @e.preprocess_prog.eval_prog(env).shift(@dx, @dy)
+  end
+  def preprocess_prog
+    self
   end
 end
