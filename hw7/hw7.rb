@@ -127,11 +127,34 @@ class Point < GeometryValue
   def shift(dx,dy)
     Point.new((@x + dx), (@y+dy))
   end
+  def intersect other
+    other.intersectPoint self
+  end
+
+  def intersectPoint p
+    if real_close_point(@x,@y,p.x,p.y)
+      Point.new(@x,@y)
+    else
+      NoPoints.new
+    end
+  end
+  def intersectLine line
+    if real_close(@y, (@x*line.m)+line.b)
+      Point.new(@x,@y)
+    else
+      NoPoints.new
+    end
+  end
+  def intersectVerticalLine vline
+    if real_close(@x,vline.x)
+      Point.new(@x,@y)
+    else
+      NoPoints.new
+    end
+  end  
 end
   # SAVE for part 4
-  # def intersect other
-  #   other.intersectPoint self
-  # end
+
   # def intersectPoint p
   # end
   # def intersectLine line
@@ -159,6 +182,28 @@ class Line < GeometryValue
   def shift(dx,dy)
     Line.new(@m, ((@b + dy) - (@m * dx)))
   end
+  def intersect other
+    other.intersectLine self
+  end
+  def intersectPoint p
+    p.intersectLine self
+  end
+  def intersectLine line
+    if real_close(@m,line.m)
+      if real_close(@b,line.b)
+        Line.new(@m,@b)
+      else
+        NoPoints.new
+      end
+    else
+      x=(line.b-@b)/(@m-line.m)
+      y=(@m*x)+@b
+      Point.new(x,y)
+    end
+  end 
+  def intersectVerticalLine vline
+    Point.new(vline.x,(@m*vline.x)+@b)
+  end
 end
 
 class VerticalLine < GeometryValue
@@ -176,6 +221,22 @@ class VerticalLine < GeometryValue
   end
   def shift(dx,dy)
     VerticalLine.new (@x + dx)
+  end
+  def intersect other
+    other.intersectVerticalLine self
+  end
+  def intersectPoint p
+    p.intersectVerticalLine self
+  end
+  def intersectLine line
+    line.intersectVerticalLine self
+  end
+  def intersectVerticalLine vline
+    if real_close(@x,vline.x)
+      VerticalLine.new(@x)
+    else
+      NoPoints.new
+    end
   end
 end
 
@@ -217,6 +278,9 @@ class LineSegment < GeometryValue
   def shift(dx,dy)
     LineSegment.new((@x1+dx), (@y1+dy), (@x2+dx), (@y2+dy))
   end
+  def intersect other
+    other.intersectLineSegment self
+  end
 end
 
 # Note: there is no need for getter methods for the non-value classes
@@ -228,6 +292,14 @@ class Intersect < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+
+  def preprocess_prog
+    self
+  end
+  def eval_prog env
+    (e1.preprocess_prog.eval_prog(env)).intersect(e2.preprocess_prog.eval_prog(env))
+  end
+
 end
 
 class Let < GeometryExpression
