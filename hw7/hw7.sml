@@ -214,7 +214,7 @@ fun preprocess_prog (e) =
 	let
 		val (x1,y1,x2,y2) = seg
 	in
-		if (real_close (x1,x2) andalso real_close (y1,y2)) (* collaps *)
+		if (real_close (x1,x2) andalso real_close (y1,y2)) (* collapse *)
 		then Point (x1,y1)
 		else
 			if (x2 < x1)
